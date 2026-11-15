@@ -1,0 +1,8 @@
+.godot/
+/android/
+/build/
+*.keystore
+*.jks
+*.pass
+export_credentials.cfg
+.codegpt-game.json
