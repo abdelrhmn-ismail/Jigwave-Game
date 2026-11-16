@@ -10,8 +10,8 @@ config_version=5
 
 [application]
 
-config/name="Puzzloom"
-config/description="Puzzloom - an original jigsaw puzzle game."
+config/name="Jigwave"
+config/description="Jigwave - an original jigsaw puzzle game."
 run/main_scene="res://scenes/main.tscn"
 config/quit_on_go_back=false
 config/features=PackedStringArray("4.7", "GL Compatibility")

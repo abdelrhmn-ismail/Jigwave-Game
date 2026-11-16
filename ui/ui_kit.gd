@@ -3,7 +3,7 @@ extends RefCounted
 ## Colors and small helpers to build labels, buttons and panels from code.
 ## The whole look lives here: change a color once, it changes everywhere.
 ##
-## Puzzloom's own identity: a warm, light "puzzle table" — cream paper,
+## Jigwave's own identity: a warm, light "puzzle table" — cream paper,
 ## a linen puzzle mat, white cards with soft shadows, ink-blue text, coral
 ## and teal accents. (Deliberately the opposite of Bloxo's dark neon.)
 

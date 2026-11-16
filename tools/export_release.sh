@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Builds the signed release files:
-#   build/puzzloom-release.aab  -> upload to Google Play
-#   build/puzzloom-release.apk  -> install on your own phone
+#   build/jigwave-release.aab  -> upload to Google Play
+#   build/jigwave-release.apk  -> install on your own phone
 #
 #   GODOT=/path/to/Godot_v4.7.2-stable_linux.x86_64 tools/export_release.sh
 #
@@ -11,9 +11,9 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 GODOT="${GODOT:-godot}"
-KEYSTORE="keys/puzzloom-release.keystore"
-PASS_FILE="keys/puzzloom-release.pass"
-ALIAS="puzzloom"
+KEYSTORE="keys/jigwave-release.keystore"
+PASS_FILE="keys/jigwave-release.pass"
+ALIAS="jigwave"
 
 [ -f "$KEYSTORE" ] && [ -f "$PASS_FILE" ] || { echo "Missing $KEYSTORE or $PASS_FILE"; exit 1; }
 command -v "$GODOT" >/dev/null 2>&1 || [ -x "$GODOT" ] || { echo "Godot not found: set GODOT=/path/to/godot"; exit 1; }
@@ -25,8 +25,8 @@ GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD="$(cat "$PASS_FILE")"
 export GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD
 
 "$GODOT" --headless --path . --install-android-build-template \
-	--export-release "Android Release" build/puzzloom-release.aab
-"$GODOT" --headless --path . --export-release "Android" build/puzzloom-release.apk
+	--export-release "Android Release" build/jigwave-release.aab
+"$GODOT" --headless --path . --export-release "Android" build/jigwave-release.apk
 
-ls -la build/puzzloom-release.aab build/puzzloom-release.apk
-echo "== Done: build/puzzloom-release.aab (Google Play) + build/puzzloom-release.apk (phone)"
+ls -la build/jigwave-release.aab build/jigwave-release.apk
+echo "== Done: build/jigwave-release.aab (Google Play) + build/jigwave-release.apk (phone)"

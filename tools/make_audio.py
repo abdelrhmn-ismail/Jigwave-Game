@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generates Puzzloom's own sound effects and relaxing music (100% original).
+"""Generates Jigwave's own sound effects and relaxing music (100% original).
 
     python3 -I tools/make_audio.py
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draws Puzzloom's own logo, app icons and store graphics (100% original).
+"""Draws Jigwave's own logo, app icons and store graphics (100% original).
 
     python3 -I tools/make_art.py
 
@@ -25,7 +25,7 @@ ROOT = Path(__file__).resolve().parent.parent
 IMG = ROOT / "assets" / "images"
 FONT = ROOT / "assets" / "fonts" / "Fredoka.ttf"
 
-# Puzzloom's warm, light identity (same colors as ui/ui_kit.gd).
+# Jigwave's warm, light identity (same colors as ui/ui_kit.gd).
 BG_TOP = (255, 247, 238)  # cream paper
 BG_BOTTOM = (251, 225, 204)  # warm peach
 INK = (46, 58, 75)
@@ -177,9 +177,9 @@ def font(px, weight=650):
 
 
 def wordmark(d, x, y, px):
-    """'Puzz' in ink + 'loom' in coral, with a soft warm shadow."""
+    """'Jig' in ink + 'wave' in coral, with a soft warm shadow."""
     f = font(px)
-    parts = [("Puzz", INK), ("loom", CORAL)]
+    parts = [("Jig", INK), ("wave", CORAL)]
     cx = x
     for text, color in parts:
         d.text((cx + px * 0.02, y + px * 0.045), text, font=f, fill=SHADOW + (45,))
@@ -213,7 +213,7 @@ def main():
     # Largest wordmark that fits next to the mark.
     px = 210 * SS
     room = W - 400 * SS - 20 * SS
-    while d.textlength("Puzzloom", font=font(px)) > room:
+    while d.textlength("Jigwave", font=font(px)) > room:
         px -= 4 * SS
     wordmark(d, 400 * SS, (H - px * 1.25) // 2, px)
     down(logo, (1200, 420)).save(IMG / "logo.png")

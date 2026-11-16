@@ -1,6 +1,6 @@
-# 🧩 Puzzloom — Full Plan (Godot 4 → Google Play)
+# 🧩 Jigwave — Full Plan (Godot 4 → Google Play)
 
-> **Name:** *Puzzloom* (puzzle + bloom: the picture blooms as you complete it). Store title: *Puzzloom: Jigsaw Puzzles*.
+> **Name:** *Jigwave* (jigsaw + wave: a calm wave of pictures, piece by piece). Store title: *Jigwave: Jigsaw Puzzles*.
 > **Rules:** an original jigsaw game. No images, sounds, code, name, or look from any
 > existing app. Every picture must be **CC0 or Public Domain** and is listed in
 > `assets/puzzles/CREDITS.md`. No photos of identifiable people (especially children).

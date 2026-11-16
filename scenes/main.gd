@@ -14,7 +14,7 @@ var ui_layer: CanvasLayer
 
 
 ## Static background behind every screen (drawn once): warm cream paper
-## with faint scattered jigsaw pieces — Puzzloom's signature pattern.
+## with faint scattered jigsaw pieces — Jigwave's signature pattern.
 class Background extends Node2D:
 	var _pieces: Array = [] # [outline, position, angle]
 

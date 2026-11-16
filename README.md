@@ -1,4 +1,4 @@
-# 🧩 Puzzloom
+# 🧩 Jigwave
 
 An original jigsaw puzzle game made with **Godot 4.7** (GDScript), portrait, for Android.
 Free pictures (CC0 / public domain) are cut into real jigsaw pieces; drag them from the
@@ -34,7 +34,7 @@ python3 -I tools/make_audio.py   # sound effects + 4 relaxing music tracks
 
 ## 📦 Release build
 ```
-GODOT=/path/to/godot tools/export_release.sh   # build/puzzloom-release.aab + .apk
+GODOT=/path/to/godot tools/export_release.sh   # build/jigwave-release.aab + .apk
 ```
 The signing key and its password are in `keys/` (never committed — back it up in 3 places).
 Raise `version/code` in both Android presets before every Google Play upload.
