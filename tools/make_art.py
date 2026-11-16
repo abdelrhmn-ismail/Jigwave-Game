@@ -25,13 +25,15 @@ ROOT = Path(__file__).resolve().parent.parent
 IMG = ROOT / "assets" / "images"
 FONT = ROOT / "assets" / "fonts" / "Fredoka.ttf"
 
-BG_TOP = (19, 32, 51)
-BG_BOTTOM = (31, 65, 80)
-CREAM = (255, 246, 236)
-CORAL = (255, 140, 90)
-MINT = (79, 209, 181)
-GOLD = (255, 200, 69)
+# Puzzloom's warm, light identity (same colors as ui/ui_kit.gd).
+BG_TOP = (255, 247, 238)  # cream paper
+BG_BOTTOM = (251, 225, 204)  # warm peach
+INK = (46, 58, 75)
+CORAL = (255, 122, 89)
+MINT = (34, 181, 165)  # teal
+GOLD = (255, 190, 60)
 SKY = (106, 169, 255)
+SHADOW = (115, 72, 30)
 SS = 4  # supersampling for smooth edges
 
 
@@ -97,7 +99,7 @@ def draw_piece(base, pts, color, shadow=True, lift=0.0):
     if shadow:
         sh = Image.new("RGBA", base.size, (0, 0, 0, 0))
         off = 10 * SS + lift
-        ImageDraw.Draw(sh).polygon([(px + off * 0.4, py + off) for px, py in pts], fill=(0, 0, 0, 110))
+        ImageDraw.Draw(sh).polygon([(px + off * 0.4, py + off) for px, py in pts], fill=SHADOW + (80,))
         base.alpha_composite(sh.filter(ImageFilter.GaussianBlur(8 * SS + lift * 0.3)))
     layer = Image.new("RGBA", base.size, (0, 0, 0, 0))
     d = ImageDraw.Draw(layer)
@@ -143,8 +145,8 @@ def mark(size, lifted=True):
         c = (ox + cell * 1.5, oy + cell * 0.5)
         tr = [(px + cell * 0.16, py - cell * 0.2) for px, py in rotate(tr, c, 12)]
         draw_piece(img, tr, MINT, lift=6 * SS)
-        sparkle(img, ox + cell * 2.25, oy - cell * 0.05, cell * 0.16)
-        sparkle(img, ox + cell * 2.45, oy + cell * 0.32, cell * 0.08)
+        sparkle(img, ox + cell * 2.25, oy - cell * 0.05, cell * 0.16, GOLD)
+        sparkle(img, ox + cell * 2.45, oy + cell * 0.32, cell * 0.08, CORAL)
     else:
         draw_piece(img, tr, MINT)
     return img
@@ -175,12 +177,12 @@ def font(px, weight=650):
 
 
 def wordmark(d, x, y, px):
-    """'Puzz' in cream + 'loom' in coral, with a soft drop shadow."""
+    """'Puzz' in ink + 'loom' in coral, with a soft warm shadow."""
     f = font(px)
-    parts = [("Puzz", CREAM), ("loom", CORAL)]
+    parts = [("Puzz", INK), ("loom", CORAL)]
     cx = x
     for text, color in parts:
-        d.text((cx + px * 0.03, y + px * 0.06), text, font=f, fill=(0, 0, 0, 90))
+        d.text((cx + px * 0.02, y + px * 0.045), text, font=f, fill=SHADOW + (45,))
         d.text((cx, y), text, font=f, fill=color + (255,))
         cx += d.textlength(text, font=f)
     return cx - x
@@ -231,10 +233,10 @@ def main():
         ImageDraw.Draw(mask).polygon(pts, fill=255)
         tile = Image.new("RGBA", pic.size, (0, 0, 0, 0))
         tile.paste(pic, (0, 0), mask)
-        ImageDraw.Draw(tile).line(pts + [pts[0]], fill=(255, 255, 255, 150), width=2 * SS)
+        ImageDraw.Draw(tile).line(pts + [pts[0]], fill=(255, 255, 255, 220), width=3 * SS)
         tile = tile.rotate(rot, resample=Image.Resampling.BICUBIC, expand=True)
         sh = Image.new("RGBA", tile.size, (0, 0, 0, 0))
-        sh.paste((0, 0, 0, 120), (0, 0), tile.split()[3])
+        sh.paste(SHADOW + (90,), (0, 0), tile.split()[3])
         fgx.alpha_composite(sh.filter(ImageFilter.GaussianBlur(10 * SS)), (sx * SS + 10 * SS, sy * SS + 16 * SS))
         fgx.alpha_composite(tile, (sx * SS, sy * SS))
     lg = Image.open(IMG / "logo.png").convert("RGBA").resize((660 * SS, 231 * SS), Image.Resampling.LANCZOS)

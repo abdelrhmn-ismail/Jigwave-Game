@@ -169,6 +169,11 @@ func test_stars_and_rewards() -> void:
 	check(Economy.stars(7, 64) == 3 and Economy.stars(16, 64) == 2 and Economy.stars(17, 64) == 1, "64 pieces limits")
 	check(Economy.reward(9, 3) == 27, "9 pieces, 3 stars = 10 + 15 + 2")
 	check(Economy.reward(64, 1) == 31, "64 pieces, 1 star = 10 + 5 + 16")
+	check(Economy.replay_reward(9, 3, 3) == 2, "replaying a 9-piece puzzle pays only 2")
+	check(Economy.replay_reward(64, 1, 3) == 16, "replay with better stars: 2 + 4 + 10")
+	check(Economy.replay_reward(9, 3, 1) == 2, "worse stars on replay never take coins away")
+	check(Economy.replay_reward(9, 3, 3) * 15 < Economy.HINT_PLACE_COST + Economy.HINT_PEEK_COST * 2,
+		"farming small replays is slow compared to hint prices")
 
 
 func test_levels() -> void:

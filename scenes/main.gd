@@ -13,19 +13,31 @@ var current: Node
 var ui_layer: CanvasLayer
 
 
-## Static gradient behind every screen (drawn once).
+## Static background behind every screen (drawn once): warm cream paper
+## with faint scattered jigsaw pieces — Puzzloom's signature pattern.
 class Background extends Node2D:
+	var _pieces: Array = [] # [outline, position, angle]
+
 	func _ready() -> void:
 		get_viewport().size_changed.connect(queue_redraw)
+		var cut := JigsawCut.new(3, 300.0, 7)
+		var rng := RandomNumberGenerator.new()
+		rng.seed = 21
+		for i in 16:
+			_pieces.append([cut.local_outline(rng.randi_range(0, 8)),
+				Vector2(rng.randf(), rng.randf()), rng.randf() * TAU, rng.randf_range(0.7, 1.4)])
 
 	func _draw() -> void:
 		var s := get_viewport_rect().size
 		draw_polygon(PackedVector2Array([Vector2.ZERO, Vector2(s.x, 0), s, Vector2(0, s.y)]),
 			PackedColorArray([UIKit.BG_TOP, UIKit.BG_TOP, UIKit.BG_BOTTOM, UIKit.BG_BOTTOM]))
-		# A few faint jigsaw-like dots for texture.
-		for i in 14:
-			var p := Vector2(fmod(i * 397.0, s.x), fmod(i * 701.0 + 120.0, s.y))
-			draw_circle(p, 40.0 + (i % 4) * 22.0, Color(1, 1, 1, 0.025))
+		for p in _pieces:
+			var pts: PackedVector2Array = p[0]
+			draw_set_transform(p[1] * s, p[2], Vector2.ONE * p[3])
+			var closed := pts.duplicate()
+			closed.append(pts[0])
+			draw_polyline(closed, UIKit.PATTERN, 4.0, true)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 func _ready() -> void:
@@ -75,6 +87,13 @@ func _take_screenshot(path: String) -> void:
 
 
 func _level_state(level: int) -> PuzzleState:
+	# A level put aside for a gallery puzzle comes back as it was.
+	if not SaveData.parked.is_empty():
+		var p := PuzzleState.new()
+		var ok := p.from_dict(SaveData.parked) and p.level == level and not Catalog.get_item(p.picture_id).is_empty()
+		SaveData.parked = {}
+		if ok:
+			return p
 	var s := PuzzleState.new()
 	var pic := Catalog.picture_for_level(level)
 	s.setup(pic["id"], Levels.grid_for_level(level), level, Levels.cut_seed(level))
@@ -117,6 +136,8 @@ func _on_play(resume: bool) -> void:
 
 
 func _on_free_play(picture_id: String, grid: int) -> void:
+	if int(SaveData.current.get("level", 0)) > 0:
+		SaveData.parked = SaveData.current
 	var s := PuzzleState.new()
 	s.setup(picture_id, grid, 0, randi() % 1000000 + 1)
 	show_puzzle(s)

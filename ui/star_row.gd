@@ -20,8 +20,8 @@ func _draw() -> void:
 		var grow := clampf(shown - i, 0.0, 1.0)
 		var lit := i < count and grow > 0.0
 		var rr := r * (0.85 + 0.15 * grow) if lit else r * 0.85
-		_star(c + Vector2(0, rr * 0.08), rr, Color(0, 0, 0, 0.3))
-		_star(c, rr, UIKit.GOLD if lit else Color(UIKit.TEXT_DIM, 0.35))
+		_star(c + Vector2(0, rr * 0.08), rr, UIKit.SHADOW)
+		_star(c, rr, UIKit.GOLD if lit else Color(UIKit.TEXT_DIM, 0.3))
 
 
 func _star(c: Vector2, r: float, color: Color) -> void:

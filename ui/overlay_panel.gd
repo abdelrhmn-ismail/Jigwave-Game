@@ -11,7 +11,7 @@ func _init() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	var dim := ColorRect.new()
-	dim.color = Color(0.02, 0.04, 0.08, 0.72)
+	dim.color = Color(0.22, 0.14, 0.08, 0.45)
 	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(dim)
 	var center := CenterContainer.new()
@@ -19,7 +19,7 @@ func _init() -> void:
 	add_child(center)
 	panel = PanelContainer.new()
 	panel.custom_minimum_size = Vector2(780, 0)
-	panel.add_theme_stylebox_override("panel", UIKit.panel_style(UIKit.PANEL, 48, 56, 4))
+	panel.add_theme_stylebox_override("panel", UIKit.panel_style(UIKit.PANEL, 56, 56, 0, UIKit.PANEL_EDGE, 24))
 	center.add_child(panel)
 	box = VBoxContainer.new()
 	box.add_theme_constant_override("separation", 26)

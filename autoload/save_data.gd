@@ -15,6 +15,9 @@ var vibration_on := true
 var language := ""
 ## Snapshot from PuzzleState.to_dict(), or {} when nothing is in progress.
 var current := {}
+## A level puzzle put aside while a gallery puzzle is played; it comes
+## back when that level is played again (so no placed piece is lost).
+var parked := {}
 
 
 func _ready() -> void:
@@ -37,6 +40,8 @@ func load_data() -> void:
 	language = str(data.get("language", ""))
 	var cur = data.get("current", {})
 	current = cur if typeof(cur) == TYPE_DICTIONARY else {}
+	var park = data.get("parked", {})
+	parked = park if typeof(park) == TYPE_DICTIONARY else {}
 
 
 func write() -> void:
@@ -53,6 +58,7 @@ func write() -> void:
 		"vibration_on": vibration_on,
 		"language": language,
 		"current": current,
+		"parked": parked,
 	}))
 
 
@@ -78,10 +84,12 @@ func stars_for(picture_id: String, grid: int) -> int:
 func finish_puzzle(state: PuzzleState) -> int:
 	var key := "%s|%d" % [state.picture_id, state.grid]
 	var star_count := state.stars()
-	best_stars[key] = maxi(int(best_stars.get(key, 0)), star_count)
+	var old_stars := int(best_stars.get(key, 0))
+	best_stars[key] = maxi(old_stars, star_count)
 	if state.level > 0 and state.level >= level:
 		level = state.level + 1
-	var won := Economy.reward(state.piece_count(), star_count)
+	var won := Economy.reward(state.piece_count(), star_count) if old_stars == 0 \
+		else Economy.replay_reward(state.piece_count(), old_stars, star_count)
 	coins = clampi(coins + won, 0, Economy.MAX_COINS)
 	current = {}
 	write()

@@ -46,7 +46,7 @@ func _ready() -> void:
 			Lang.t("PIECES") % (Levels.grid_for_level(SaveData.level) * Levels.grid_for_level(SaveData.level))]
 
 	var card := PanelContainer.new()
-	card.add_theme_stylebox_override("panel", UIKit.panel_style(UIKit.PANEL, 44, 28, 4))
+	card.add_theme_stylebox_override("panel", UIKit.panel_style(UIKit.PANEL, 48, 28, 0, UIKit.PANEL_EDGE, 20))
 	box.add_child(card)
 	var card_box := VBoxContainer.new()
 	card_box.add_theme_constant_override("separation", 22)
@@ -57,8 +57,8 @@ func _ready() -> void:
 		tex.custom_minimum_size = Vector2(620, 620)
 		tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-		# Not finished yet: show it dimmed, like a picture still to reveal.
-		tex.modulate = Color(0.55, 0.6, 0.7) if resume == null else Color.WHITE
+		# Not started yet: a little faded, like a picture still to reveal.
+		tex.modulate = Color(1, 1, 1, 0.75) if resume == null else Color.WHITE
 		card_box.add_child(tex)
 	card_box.add_child(UIKit.label(info, 44, UIKit.TEXT))
 	var play := UIKit.button(Lang.t("CONTINUE") if resume != null else Lang.t("PLAY"), Vector2(620, 150), 64, UIKit.ACCENT)

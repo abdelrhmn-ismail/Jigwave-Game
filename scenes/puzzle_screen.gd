@@ -22,6 +22,7 @@ var texture: Texture2D
 var cut: JigsawCut
 var pieces := {} # index -> PieceNode
 var completed := false
+var peeking := false
 
 # --- layout ---
 var view_size := Vector2.ZERO
@@ -72,7 +73,7 @@ class GuideLines extends Node2D:
 		for i in cut.piece_count():
 			var pts := cut.outline(i)
 			pts.append(pts[0])
-			draw_polyline(pts, Color(1, 1, 1, 0.09), w, true)
+			draw_polyline(pts, UIKit.GUIDE, w, true)
 
 
 ## A ring and a few sparks where a piece snapped in (frees itself).
@@ -200,7 +201,7 @@ func _hint_button(text: String, cost: int) -> Button:
 		coin.custom_minimum_size = Vector2(32, 32)
 		coin.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(coin)
-		row.add_child(UIKit.label(str(cost), 36, UIKit.GOLD))
+		row.add_child(UIKit.label(str(cost), 36, UIKit.GOLD_TEXT))
 	b.add_child(row)
 	return b
 
@@ -210,7 +211,7 @@ func _refresh_hud() -> void:
 	(coins_box.get_node("Amount") as Label).text = str(SaveData.coins)
 	if hint_buttons.has("place"):
 		hint_buttons["place"].disabled = state.tray.is_empty() or completed
-		hint_buttons["peek"].disabled = completed
+		hint_buttons["peek"].disabled = completed or peeking
 		hint_buttons["edges"].disabled = state.tray.is_empty() or completed
 
 
@@ -236,7 +237,9 @@ func _layout() -> void:
 	var tray_top := hint_y + hint_h + 22.0
 	tray_rect = Rect2(0, tray_top, view_size.x, maxf(bottom - tray_top, 200.0))
 	slot_w = clampf(tray_rect.size.y * 0.8, 200.0, 300.0)
-	var on_screen_cell := minf(slot_w / (1.0 + 2.0 * JigsawCut.TAB_REACH), cut.cell * board_scale)
+	# Tray pieces fill their slot, even when that is bigger than a board
+	# cell (big puzzles): easy to see and grab; they shrink while dragged.
+	var on_screen_cell := slot_w / (1.0 + 2.0 * JigsawCut.TAB_REACH)
 	tray_scale = on_screen_cell / cut.cell
 
 	back_button.position = Vector2(40, top)
@@ -302,10 +305,13 @@ func _layout_tray(animate: bool) -> void:
 
 func _draw() -> void:
 	# Board frame and tray strip: drawn only when the layout changes.
-	var frame := UIKit.panel_style(UIKit.BOARD, 28, 0, 6,
-		UIKit.PANEL_EDGE.lerp(UIKit.WRONG, wrong_flash))
-	draw_style_box(frame, board_rect.grow(18))
-	draw_style_box(UIKit.panel_style(Color(UIKit.PANEL, 0.85), 40), Rect2(16, tray_rect.position.y, view_size.x - 32, tray_rect.size.y))
+	# A linen puzzle mat in a white frame that floats on a soft shadow;
+	# the frame blushes red for a moment after a wrong drop.
+	var frame := UIKit.panel_style(UIKit.BOARD, 30, 0, 14,
+		UIKit.BOARD_EDGE.lerp(UIKit.WRONG, wrong_flash), 18)
+	draw_style_box(frame, board_rect.grow(22))
+	draw_style_box(UIKit.panel_style(Color(UIKit.PANEL, 0.75), 44, 0, 2, UIKit.PANEL_EDGE, 8),
+		Rect2(16, tray_rect.position.y, view_size.x - 32, tray_rect.size.y))
 
 
 # =====================================================================
@@ -479,13 +485,15 @@ func _on_hint(kind: String) -> void:
 			if not SaveData.spend_coins(Economy.HINT_PEEK_COST):
 				_show_toast(Lang.t("NOT_ENOUGH"))
 				return
-			hint_buttons["peek"].disabled = true
+			peeking = true
 			Audio.play("peek")
 			var tw := peek_sprite.create_tween()
 			tw.tween_property(peek_sprite, "modulate:a", 0.45, 0.3)
 			tw.tween_interval(Economy.PEEK_SECONDS)
 			tw.tween_property(peek_sprite, "modulate:a", 0.0, 0.4)
-			tw.tween_callback(_refresh_hud)
+			tw.tween_callback(func():
+				peeking = false
+				_refresh_hud())
 		"place":
 			if state.tray.is_empty():
 				return
@@ -543,7 +551,7 @@ func _show_complete_panel(won: int) -> void:
 			tw.tween_callback(Audio.play.bind("star", 1.0 + 0.12 * i))
 	tw.tween_callback(Audio.play.bind("coin"))
 	panel.add_text(Lang.t("MISTAKES") % state.mistakes, 40, UIKit.TEXT_DIM)
-	panel.add_text(Lang.t("COINS_WON") % won, 54, UIKit.GOLD)
+	panel.add_text(Lang.t("COINS_WON") % won, 54, UIKit.GOLD_TEXT)
 	if state.level > 0:
 		panel.add_button(Lang.t("NEXT"), func(): play_level.emit(state.level + 1), UIKit.ACCENT)
 	else:
@@ -566,6 +574,19 @@ func _go_home() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		_go_home()
-	elif what == NOTIFICATION_APPLICATION_PAUSED or what == NOTIFICATION_WM_CLOSE_REQUEST:
+	elif what in [NOTIFICATION_APPLICATION_PAUSED, NOTIFICATION_APPLICATION_FOCUS_OUT, NOTIFICATION_WM_CLOSE_REQUEST]:
+		# A call or the home button can cut a drag off with no "finger up":
+		# put the piece back so it is not left hanging.
+		cancel_drag()
 		if state != null and not completed:
 			_save()
+
+
+func cancel_drag() -> void:
+	if drag_piece == null:
+		return
+	var node := drag_piece
+	drag_piece = null
+	touch_mode = ""
+	node.lifted = false
+	_return_to_tray(node)
