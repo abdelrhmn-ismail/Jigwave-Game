@@ -1,4 +1,4 @@
-# 🧩 Puzzlo
+# 🧩 Puzzloom
 
 An original jigsaw puzzle game made with **Godot 4.7** (GDScript), portrait, for Android.
 Free pictures (CC0 / public domain) are cut into real jigsaw pieces; drag them from the
@@ -26,6 +26,19 @@ python3 -I tools/fetch_pictures.py --remove nature_004,food_002                 
 Every new picture must be checked by eye (no logos, no faces of real people).
 Credits: `assets/puzzles/CREDITS.md`.
 
+## 🎨 Art and 🎵 sound (all original, generated)
+```
+python3 -I tools/make_art.py     # logo, app icons, store icon, feature graphic
+python3 -I tools/make_audio.py   # sound effects + 4 relaxing music tracks
+```
+
+## 📦 Release build
+```
+GODOT=/path/to/godot tools/export_release.sh   # build/puzzloom-release.aab + .apk
+```
+The signing key and its password are in `keys/` (never committed — back it up in 3 places).
+Raise `version/code` in both Android presets before every Google Play upload.
+
 ## 🗂️ Where things are
 | What | File |
 |---|---|
@@ -39,4 +52,5 @@ Credits: `assets/puzzles/CREDITS.md`.
 
 ## 📜 Credits
 - Pictures: see `assets/puzzles/CREDITS.md` (all CC0 / public domain)
+- Logo, icons, sounds and music: made for this game by `tools/make_art.py` and `tools/make_audio.py`
 - Fonts: [Fredoka](https://fonts.google.com/specimen/Fredoka) and [Tajawal](https://fonts.google.com/specimen/Tajawal) — SIL Open Font License 1.1

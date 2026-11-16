@@ -1,6 +1,6 @@
-# 🧩 Puzzlo — Full Plan (Godot 4 → Google Play)
+# 🧩 Puzzloom — Full Plan (Godot 4 → Google Play)
 
-> **Working title:** *Puzzlo* (check the name is free on Google Play before release).
+> **Name:** *Puzzloom* (puzzle + bloom: the picture blooms as you complete it). Store title: *Puzzloom: Jigsaw Puzzles*.
 > **Rules:** an original jigsaw game. No images, sounds, code, name, or look from any
 > existing app. Every picture must be **CC0 or Public Domain** and is listed in
 > `assets/puzzles/CREDITS.md`. No photos of identifiable people (especially children).
@@ -17,13 +17,15 @@ that only redraws when something changes.
 - [x] Phase 1 — Jigsaw cutter: classic tab/blank pieces from any picture + tests
 - [x] Phase 2 — Puzzle screen: board, scrolling tray, drag, snap, wrong → back to tray
 - [x] Phase 3 — Levels, stars, coins, hints (place a piece, peek) + save/resume
-- [x] Phase 4 — Picture library tool (CC0 from Openverse) + first batch (31 pictures, checked by eye)
+- [x] Phase 4 — Picture library tool (CC0 from Openverse): auto-filters (white cut-outs, grey, too dark, duplicates, rawpixel watermarks) + eye check
 - [ ] Phase 5 — Home screen polish: level path / map (basic home + gallery with categories and free-play sizes already work)
-- [ ] Phase 6 — Look and feel: own theme, logo, icons, sounds, music, juice
+- [x] Phase 6 — Own logo + icons + store graphics (`tools/make_art.py`), own sounds + 4 relaxing music tracks (`tools/make_audio.py`)
 - [ ] Phase 7 — Languages (EN, AR first; then FR, DE, ES, IT like Bloxo)
-- [ ] Phase 8 — Bigger library (300+ pictures), daily puzzle, gifts
+- [x] Phase 8a — Library of **263 pictures** in 8 categories (each checked by eye; ~200 rejected)
+- [ ] Phase 8b — 400+ pictures, daily puzzle, gifts
 - [ ] Phase 9 — Test on real phones (low-end), performance pass
-- [ ] Phase 10 — Release build (AAB) + Google Play listing
+- [x] Phase 10a — Release build: signed AAB + APK (`tools/export_release.sh`, key in `keys/`, git-ignored)
+- [ ] Phase 10b — Google Play listing
 
 ---
 
@@ -53,6 +55,10 @@ Mistake limits for stars: `3★ ≤ ceil(pieces × 0.10)`, `2★ ≤ ceil(pieces
 ---
 
 ## 🗺️ Levels (a very large number)
+
+With 263 pictures the first 263 levels are all different pictures (9 → 64 pieces);
+after that every picture comes back with more pieces (81, then 100), so there is
+no last level. A player doing ~5 puzzles a day has months of play.
 
 - The library is a list of pictures in a fixed, mixed order (nature, animals,
   space, art, cities, food, sports, toys…), so every level feels different.
@@ -113,11 +119,13 @@ Puzzles/
 ├── assets/puzzles/  <category>/<id>.jpg, catalog.json, CREDITS.md
 ├── assets/sounds | fonts
 ├── tests/         test_runner.gd (rules), smoke_test (plays a whole puzzle)
-└── tools/         fetch_pictures.py (Openverse CC0 → 1024×1024 JPG + credits)
+├── assets/images/ logo, icons, feature graphic (made by tools/make_art.py)
+├── keys/          release key + password (git-ignored, back it up!)
+└── tools/         fetch_pictures.py, make_art.py, make_audio.py, export_release.sh
 ```
 
 ### APK size
-31 pictures add about 6 MB (lossy WebP import). 300 pictures ≈ +60 MB — still fine
+263 pictures at lossy quality 0.75 keep the APK reasonable (see build/). 31 pictures added about 6 MB (lossy WebP import). 300 pictures ≈ +60 MB — still fine
 for Google Play (AAB limit 200 MB), but consider 768 px pictures or Play Asset
 Delivery if the library grows past ~400.
 

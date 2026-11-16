@@ -45,19 +45,44 @@ MIN_SIDE = 1100  # skip images smaller than this on their short side
 # people (and above all children) need consent we do not have.
 QUERIES = {
     "nature": ["mountain lake", "waterfall", "forest path", "beach sunset",
-               "flower field", "autumn trees", "desert dunes", "snowy mountains"],
-    "animals": ["red fox", "owl", "butterfly flower", "parrot", "tiger",
-                "elephant", "puppy", "kitten", "horse meadow", "sea turtle"],
-    "space": ["nebula", "galaxy", "earth from space", "moon surface", "aurora"],
+               "flower field", "autumn trees", "desert dunes", "snowy mountains",
+               "tulip field", "lavender field", "rainbow landscape", "canyon",
+               "tropical island", "river valley", "cherry blossom tree", "misty hills",
+               "sunflowers", "coral reef", "lake reflection", "green rice terraces"],
+    "animals": ["wild rabbit", "deer forest", "bee on flower", "goldfish", "hedgehog", "swan lake",
+                "red fox", "owl", "butterfly flower", "parrot", "tiger",
+                "elephant", "puppy", "kitten", "horse meadow", "sea turtle",
+                "penguin", "giraffe", "lion", "dolphin", "hummingbird", "panda",
+                "koala", "flamingo", "zebra", "squirrel", "ladybug", "peacock"],
+    "space": ["nebula", "galaxy", "earth from space", "moon surface", "aurora",
+              "milky way night sky", "saturn planet", "jupiter planet", "star cluster",
+              "mars surface", "solar eclipse", "space station", "hubble image", "orion nebula",
+              "andromeda galaxy", "pillars of creation", "rocket launch", "comet"],
     "art": ["landscape oil painting", "still life painting", "japanese woodblock print",
-            "impressionist painting garden"],
+            "impressionist painting garden", "watercolor flowers painting", "dutch golden age landscape",
+            "seascape painting", "botanical illustration", "folk art pattern", "mosaic",
+            "monet painting", "van gogh painting", "flower still life painting", "hokusai",
+            "landscape painting river", "winter landscape painting", "stained glass window"],
     "cities": ["old town street", "lighthouse", "bridge at night", "castle",
-               "harbor boats", "windmill"],
-    "food": ["fruit bowl", "cupcakes", "vegetables market", "berries", "bread bakery"],
+               "harbor boats", "windmill", "colorful houses", "venice canal",
+               "temple architecture", "city skyline night", "village street flowers",
+               "train station", "mosque architecture", "pagoda", "covered bridge"],
+    "food": ["fruit bowl", "cupcakes", "vegetables market", "berries", "bread bakery",
+             "donuts", "pizza", "macarons", "spices market", "ice cream", "chocolate",
+             "citrus fruits", "pancakes", "sushi", "cheese board"],
     "sports": ["football stadium", "soccer ball grass", "basketball court",
-               "tennis ball court", "bicycle", "sailing boat race"],
+               "tennis ball court", "bicycle", "sailing boat race", "ski slope",
+               "golf course", "running track", "chess pieces", "surfboard beach",
+               "bowling pins", "baseball glove", "hot air balloon race", "kayak river",
+               "tennis racket", "skateboard park", "ice skating rink", "rowing boats", "climbing wall",
+               "billiard table", "volleyball beach", "stadium lights", "sailboats regatta"],
     "kids": ["teddy bear", "colorful toys", "hot air balloons", "carousel",
-             "colored pencils", "kites sky", "toy train", "balloons colorful"],
+             "colored pencils", "kites sky", "toy train", "balloons colorful",
+             "rubber duck", "toy blocks", "crayons", "marbles", "spinning top toy",
+             "dollhouse", "toy car", "candy colorful", "paper boats", "puppet theater",
+             "ferris wheel", "soap bubbles", "plush toys", "wooden toys", "toy robot",
+             "circus tent", "colorful umbrellas", "gumball machine", "easter eggs colorful",
+             "paper lanterns", "lollipops", "carnival lights", "christmas ornaments", "confetti"],
 }
 
 # Words in a title that usually mean people, brands or unwanted content.
@@ -93,6 +118,36 @@ def download_url(result: dict) -> str:
         return (f"https://upload.wikimedia.org/wikipedia/commons/thumb/"
                 f"{m.group(1)}/{m.group(2)}/{name}/1920px-{name}")
     return url
+
+
+def looks_bad(img: Image.Image, category: str = "") -> str:
+    """Cheap checks that catch most pictures that make poor puzzles:
+    cut-outs on white/transparent backgrounds, black-and-white, too dark."""
+    small = square(img, 64)
+    px = list(small.getdata())
+    n = len(px)
+    near_white = sum(1 for r, g, b in px if r > 232 and g > 232 and b > 232) / n
+    dark = sum(1 for r, g, b in px if r + g + b < 60) / n
+    sat = sum(max(p) - min(p) for p in px) / n
+    if near_white > 0.45:
+        return "mostly white background"
+    if dark > 0.75 and category != "space":
+        return "too dark"
+    if sat < 7 and category != "space":
+        return "black and white / grey"
+    if img.mode in ("RGBA", "LA", "P"):
+        alpha = img.convert("RGBA").getchannel("A")
+        if alpha.getextrema()[0] < 250:
+            return "transparent cut-out"
+    return ""
+
+
+def ahash(img: Image.Image) -> int:
+    """64-bit average hash: near-identical pictures get near-identical hashes."""
+    g = ImageOps.fit(img.convert("L"), (8, 8), Image.Resampling.BILINEAR)
+    px = list(g.getdata())
+    avg = sum(px) / 64
+    return sum(1 << i for i, v in enumerate(px) if v > avg)
 
 
 def square(img: Image.Image, size: int) -> Image.Image:
@@ -166,6 +221,8 @@ def main() -> int:
         blocked = {l.split("#")[0].strip() for l in BLOCKLIST.read_text().splitlines()} - {""}
     items = load_catalog()
     known = {it["openverse_id"] for it in items}
+    hashes = [ahash(Image.open(OUT / "thumbs" / f"{it['id']}.jpg")) for it in items
+              if (OUT / "thumbs" / f"{it['id']}.jpg").exists()]
     cats = [c for c in args.categories.split(",") if c] or list(QUERIES)
 
     for cat in cats:
@@ -185,6 +242,9 @@ def main() -> int:
                     continue
                 if r.get("license") not in ("cc0", "pdm"):
                     continue
+                # rawpixel serves watermarked previews: never use it.
+                if r.get("source") == "rawpixel" or "rawpixel" in (r.get("foreign_landing_url") or ""):
+                    continue
                 w, h = r.get("width") or 0, r.get("height") or 0
                 if min(w, h) < MIN_SIDE or max(w, h) > 2.2 * min(w, h):
                     continue
@@ -203,6 +263,14 @@ def main() -> int:
                     continue
                 if min(img.size) < 800:
                     continue
+                why = looks_bad(img, cat)
+                h = ahash(img)
+                if not why and any(bin(h ^ o).count("1") <= 6 for o in hashes):
+                    why = "duplicate of a picture we already have"
+                if why:
+                    print(f"  skip {r['id']}: {why}", file=sys.stderr)
+                    continue
+                hashes.append(h)
                 pid = next_id(items, cat)
                 square(img, SIZE).save(OUT / cat / f"{pid}.jpg", quality=84, optimize=True)
                 (OUT / "thumbs").mkdir(exist_ok=True)

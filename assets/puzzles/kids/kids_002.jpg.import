@@ -17,7 +17,7 @@ dest_files=["res://.godot/imported/kids_002.jpg-649c267fbdd8054a2c6bad091a4e5a63
 
 compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.82
+compress/lossy_quality=0.75
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

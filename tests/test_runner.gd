@@ -18,6 +18,7 @@ func _init() -> void:
 	test_stars_and_rewards()
 	test_levels()
 	test_catalog()
+	test_art_and_sounds_exist()
 	print("\n%d passed, %d failed" % [passed, failed])
 	quit(1 if failed > 0 else 0)
 
@@ -201,6 +202,17 @@ func test_catalog() -> void:
 		if str(it.get("landing_url", "")) == "":
 			check(false, "picture %s has a credit link" % it["id"])
 	check(ResourceLoader.exists(Catalog.picture_for_level(1)["file"]), "level 1 picture exists")
+
+
+## Every sound the code plays, the music tracks and the logo/icons exist
+## (all made by tools/make_audio.py and tools/make_art.py).
+func test_art_and_sounds_exist() -> void:
+	for name in ["pick", "snap", "wrong", "click", "star", "coin", "peek", "magic", "win",
+			"music_home", "music_puzzle_1", "music_puzzle_2", "music_puzzle_3"]:
+		check(ResourceLoader.exists("res://assets/sounds/%s.wav" % name), "sound %s exists" % name)
+	for path in ["res://icon.png", "res://assets/images/logo.png", "res://assets/images/store_icon.png",
+			"res://assets/images/icon_foreground.png", "res://assets/images/icon_background.png"]:
+		check(ResourceLoader.exists(path), "%s exists" % path)
 
 
 # --- helpers -------------------------------------------------------------------

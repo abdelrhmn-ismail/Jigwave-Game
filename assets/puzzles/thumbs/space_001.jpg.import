@@ -17,7 +17,7 @@ dest_files=["res://.godot/imported/space_001.jpg-cf1e2b8b24378d3c1b55b513d613e40
 
 compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.82
+compress/lossy_quality=0.75
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

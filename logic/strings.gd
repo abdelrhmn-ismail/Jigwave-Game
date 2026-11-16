@@ -28,6 +28,7 @@ const TEXT := {
 	"CHOOSE_SIZE": {"en": "Choose the pieces", "ar": "اختر عدد القطع"},
 	"LOCKED_HINT": {"en": "Finish levels to unlock more pictures", "ar": "أنهِ المستويات لفتح صور أكثر"},
 	"SOUND": {"en": "Sound", "ar": "الصوت"},
+	"MUSIC": {"en": "Music", "ar": "الموسيقى"},
 	"VIBRATION": {"en": "Vibration", "ar": "الاهتزاز"},
 	"LANGUAGE": {"en": "Language", "ar": "اللغة"},
 	"ON": {"en": "On", "ar": "تشغيل"},

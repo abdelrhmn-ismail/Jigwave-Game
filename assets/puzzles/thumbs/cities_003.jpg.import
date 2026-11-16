@@ -17,7 +17,7 @@ dest_files=["res://.godot/imported/cities_003.jpg-273e6c5ffe032a45d369a5e1ae55a6
 
 compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.82
+compress/lossy_quality=0.75
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

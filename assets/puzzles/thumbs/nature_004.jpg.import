@@ -17,7 +17,7 @@ dest_files=["res://.godot/imported/nature_004.jpg-f1b74cc3d16abd4090b16fadb3aef0
 
 compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.82
+compress/lossy_quality=0.75
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

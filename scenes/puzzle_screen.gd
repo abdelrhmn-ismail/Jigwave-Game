@@ -98,6 +98,7 @@ class Sparkle extends Node2D:
 func _ready() -> void:
 	picture = Catalog.get_item(state.picture_id)
 	texture = load(picture["file"])
+	Audio.play_music(Audio.track_for_level(state.level))
 	cut = JigsawCut.new(state.grid, float(texture.get_width()), state.cut_seed)
 
 	board_layer = Node2D.new()
@@ -155,6 +156,8 @@ func _build_hud() -> void:
 	hud = Control.new()
 	hud.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Positions are set by hand (with their own RTL handling): no mirroring.
+	hud.layout_direction = Control.LAYOUT_DIRECTION_LTR
 	hud_layer.add_child(hud)
 
 	back_button = UIKit.button("<", Vector2(120, 120), 60)
@@ -477,6 +480,7 @@ func _on_hint(kind: String) -> void:
 				_show_toast(Lang.t("NOT_ENOUGH"))
 				return
 			hint_buttons["peek"].disabled = true
+			Audio.play("peek")
 			var tw := peek_sprite.create_tween()
 			tw.tween_property(peek_sprite, "modulate:a", 0.45, 0.3)
 			tw.tween_interval(Economy.PEEK_SECONDS)
@@ -493,7 +497,7 @@ func _on_hint(kind: String) -> void:
 			var index := state.tray[slot]
 			state.place_by_hint(index)
 			_snap(pieces[index], 0.45)
-			Audio.play("snap")
+			Audio.play("magic")
 			_save()
 	_refresh_hud()
 
@@ -531,7 +535,13 @@ func _show_complete_panel(won: int) -> void:
 	stars.shown = 0.0
 	stars.custom_minimum_size = Vector2(660, 150)
 	panel.box.add_child(stars)
-	stars.create_tween().tween_property(stars, "shown", 3.0, 0.9).set_delay(0.2)
+	var tw := stars.create_tween()
+	tw.tween_interval(0.25)
+	for i in 3:
+		tw.tween_property(stars, "shown", float(i + 1), 0.3)
+		if i < stars.count:
+			tw.tween_callback(Audio.play.bind("star", 1.0 + 0.12 * i))
+	tw.tween_callback(Audio.play.bind("coin"))
 	panel.add_text(Lang.t("MISTAKES") % state.mistakes, 40, UIKit.TEXT_DIM)
 	panel.add_text(Lang.t("COINS_WON") % won, 54, UIKit.GOLD)
 	if state.level > 0:

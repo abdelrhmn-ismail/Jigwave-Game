@@ -17,7 +17,7 @@ dest_files=["res://.godot/imported/sports_001.jpg-51833d3bcb4813d98e1ec07fca1777
 
 compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.82
+compress/lossy_quality=0.75
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1

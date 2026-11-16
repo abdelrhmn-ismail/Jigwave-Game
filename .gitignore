@@ -6,3 +6,7 @@
 *.pass
 export_credentials.cfg
 .codegpt-game.json
+
+# Release signing key + password: kept ONLY in this folder, never committed
+/keys/
+__pycache__/

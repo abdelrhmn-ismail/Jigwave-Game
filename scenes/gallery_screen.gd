@@ -16,39 +16,45 @@ var overlay: OverlayPanel
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	# Positions here are set by hand: don't let Arabic mirror them.
+	layout_direction = Control.LAYOUT_DIRECTION_LTR
+	Audio.play_music("music_home")
 	var view := get_viewport_rect().size
 	var top := 30.0 + UIKit.safe_insets(get_viewport()).x
 
+	# Add each node first, then place it (placing a node that is not in
+	# the tree yet mirrors it off-screen in Arabic).
 	var back := UIKit.button("<", Vector2(120, 120), 60)
 	back.text_direction = Control.TEXT_DIRECTION_LTR # keep "<" in Arabic too
-	back.position = Vector2(40, top)
 	back.pressed.connect(func(): back_pressed.emit())
 	add_child(back)
+	back.position = Vector2(40, top)
 	var title := UIKit.label(Lang.t("GALLERY"), 64)
+	add_child(title)
 	title.size = Vector2(view.x, 120)
 	title.position = Vector2(0, top)
-	add_child(title)
 	var coins := UIKit.coin_pill(46)
-	coins.position = Vector2(view.x - 260, top + 30)
 	add_child(coins)
+	coins.position = Vector2(view.x - 260, top + 30)
 
 	chips = HFlowContainer.new()
 	chips.add_theme_constant_override("h_separation", 14)
 	chips.add_theme_constant_override("v_separation", 14)
 	chips.alignment = FlowContainer.ALIGNMENT_CENTER
-	chips.position = Vector2(30, top + 150)
-	chips.size = Vector2(view.x - 60, 120)
-	add_child(chips)
+	chips.custom_minimum_size = Vector2(view.x - 80, 0)
 
 	var scroll := ScrollContainer.new()
-	scroll.position = Vector2(30, top + 300)
-	scroll.size = Vector2(view.x - 60, view.y - top - 330)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	add_child(scroll)
+	scroll.position = Vector2(30, top + 150)
+	scroll.size = Vector2(view.x - 60, view.y - top - 180)
 	var inner := VBoxContainer.new()
 	inner.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	inner.add_theme_constant_override("separation", 24)
 	scroll.add_child(inner)
+	# Category chips scroll with the pictures (they wrap to more rows
+	# in longer languages without covering anything).
+	inner.add_child(chips)
 	grid_box = GridContainer.new()
 	grid_box.columns = COLUMNS
 	grid_box.add_theme_constant_override("h_separation", 18)

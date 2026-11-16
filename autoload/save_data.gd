@@ -10,6 +10,7 @@ var level := 1
 ## Best stars per puzzle: {"<picture_id>|<grid>": 1..3}.
 var best_stars := {}
 var sound_on := true
+var music_on := true
 var vibration_on := true
 var language := ""
 ## Snapshot from PuzzleState.to_dict(), or {} when nothing is in progress.
@@ -31,6 +32,7 @@ func load_data() -> void:
 	var stars = data.get("best_stars", {})
 	best_stars = stars if typeof(stars) == TYPE_DICTIONARY else {}
 	sound_on = bool(data.get("sound_on", true))
+	music_on = bool(data.get("music_on", true))
 	vibration_on = bool(data.get("vibration_on", true))
 	language = str(data.get("language", ""))
 	var cur = data.get("current", {})
@@ -47,6 +49,7 @@ func write() -> void:
 		"level": level,
 		"best_stars": best_stars,
 		"sound_on": sound_on,
+		"music_on": music_on,
 		"vibration_on": vibration_on,
 		"language": language,
 		"current": current,

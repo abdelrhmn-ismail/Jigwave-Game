@@ -11,12 +11,12 @@ var overlay: OverlayPanel
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	Audio.play_music("music_home")
 	var insets := UIKit.safe_insets(get_viewport())
 
 	var coins := UIKit.coin_pill(50)
-	coins.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	add_child(coins) # add first, then place (see gallery_screen.gd)
 	coins.position = Vector2(get_viewport_rect().size.x - 270, 50 + insets.x)
-	add_child(coins)
 
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -25,8 +25,11 @@ func _ready() -> void:
 	box.add_theme_constant_override("separation", 34)
 	center.add_child(box)
 
-	var logo := UIKit.label("Puzzlo", 150, UIKit.ACCENT)
-	logo.add_theme_constant_override("shadow_offset_y", 8)
+	var logo := TextureRect.new()
+	logo.texture = load("res://assets/images/logo.png")
+	logo.custom_minimum_size = Vector2(760, 266)
+	logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	box.add_child(logo)
 
 	var resume := _resume_state()
@@ -70,24 +73,36 @@ func _ready() -> void:
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 20)
 	box.add_child(row)
-	var sound := UIKit.button("", Vector2(210, 100), 34)
-	var refresh_sound := func(): sound.text = "%s: %s" % [Lang.t("SOUND"), Lang.t("ON") if SaveData.sound_on else Lang.t("OFF")]
-	refresh_sound.call()
-	sound.pressed.connect(func():
-		if not UIKit.accept_action():
-			return
-		SaveData.sound_on = not SaveData.sound_on
-		SaveData.write()
-		refresh_sound.call())
-	row.add_child(sound)
-	var lang := UIKit.button(Lang.language_name(), Vector2(210, 100), 34)
+	row.add_child(_toggle("SOUND", "sound_on"))
+	row.add_child(_toggle("MUSIC", "music_on"))
+	var row2 := HBoxContainer.new()
+	row2.alignment = BoxContainer.ALIGNMENT_CENTER
+	row2.add_theme_constant_override("separation", 20)
+	box.add_child(row2)
+	row = row2
+	var lang := UIKit.button(Lang.language_name(), Vector2(328, 100), 34)
 	lang.pressed.connect(func():
 		if UIKit.accept_action():
 			Lang.cycle_language())
 	row.add_child(lang)
-	var credits := UIKit.button(Lang.t("CREDITS"), Vector2(210, 100), 30)
+	var credits := UIKit.button(Lang.t("CREDITS"), Vector2(328, 100), 32)
 	credits.pressed.connect(_show_credits)
 	row.add_child(credits)
+
+
+## An on/off button for a SaveData setting ("sound_on", "music_on").
+func _toggle(key: String, setting: String) -> Button:
+	var b := UIKit.button("", Vector2(328, 100), 34)
+	var refresh := func(): b.text = "%s: %s" % [Lang.t(key), Lang.t("ON") if SaveData.get(setting) else Lang.t("OFF")]
+	refresh.call()
+	b.pressed.connect(func():
+		if not UIKit.accept_action():
+			return
+		SaveData.set(setting, not SaveData.get(setting))
+		SaveData.write()
+		Audio.refresh_music()
+		refresh.call())
+	return b
 
 
 ## The unfinished puzzle, if there is a valid one.
