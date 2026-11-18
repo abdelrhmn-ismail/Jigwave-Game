@@ -39,6 +39,11 @@ GODOT=/path/to/godot tools/export_release.sh   # build/jigwave-release.aab + .ap
 The signing key and its password are in `keys/` (never committed — back it up in 3 places).
 Raise `version/code` in both Android presets before every Google Play upload.
 
+## 🏪 Google Play
+Listing texts (EN + AR), Play Console answers and release steps: **[store/LISTING.md](store/LISTING.md)**.
+Icon, feature graphic and 1080×1920 screenshots are in `store/`. Privacy policy: [PRIVACY.md](PRIVACY.md).
+Store screenshots: `godot --path . -- --screen=puzzle-half --level=18 --shot-size=1080x1920 --shot=out.png`.
+
 ## 🗂️ Where things are
 | What | File |
 |---|---|

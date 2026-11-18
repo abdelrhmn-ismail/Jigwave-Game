@@ -7,10 +7,15 @@ extends Node
 ##   --screen=home|gallery|puzzle|puzzle-half|complete
 ##   --level=<n>       level to open with --screen=puzzle*
 ##   --lang=<code>     preview a language without saving it
-##   --shot=<file>     save a screenshot after ~1.5 s, then quit
+##   --shot=<file>     save a screenshot after ~2.6 s, then quit
+##   --shot-size=WxH   render the shot at this size (e.g. 1080x1920 for
+##                     Google Play) even if the window can't be that big
 
 var current: Node
 var ui_layer: CanvasLayer
+## Where the background and screens live: this node, or an off-screen
+## SubViewport when --shot-size asks for an exact screenshot size.
+var host: Node
 
 
 ## Static background behind every screen (drawn once): warm cream paper
@@ -41,9 +46,18 @@ class Background extends Node2D:
 
 
 func _ready() -> void:
-	add_child(Background.new())
+	host = self
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--shot-size="):
+			var wh := arg.trim_prefix("--shot-size=").split("x")
+			var vp := SubViewport.new()
+			vp.size = Vector2i(int(wh[0]), int(wh[1]))
+			vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+			add_child(vp)
+			host = vp
+	host.add_child(Background.new())
 	ui_layer = CanvasLayer.new()
-	add_child(ui_layer)
+	host.add_child(ui_layer)
 	Lang.language_changed.connect(_on_language_changed)
 
 	var screen := ""
@@ -75,13 +89,15 @@ func _ready() -> void:
 		_:
 			show_home()
 	if shot != "":
-		_take_screenshot(shot)
+		# The "complete" preview needs time for its stars to finish.
+		_take_screenshot(shot, 4.0 if screen == "complete" else 2.6)
 
 
-func _take_screenshot(path: String) -> void:
-	await get_tree().create_timer(2.6).timeout
+func _take_screenshot(path: String, delay: float) -> void:
+	await get_tree().create_timer(delay).timeout
 	await RenderingServer.frame_post_draw
-	get_viewport().get_texture().get_image().save_png(path)
+	var vp: Viewport = host if host is Viewport else get_viewport()
+	vp.get_texture().get_image().save_png(path)
 	print("screenshot saved: ", path)
 	get_tree().quit()
 
@@ -150,7 +166,7 @@ func _switch_to(screen: Node) -> void:
 	if screen is Control:
 		ui_layer.add_child(screen)
 	else:
-		add_child(screen)
+		host.add_child(screen)
 
 
 func _on_language_changed() -> void:

@@ -25,7 +25,8 @@ that only redraws when something changes.
 - [ ] Phase 8b — 400+ pictures, daily puzzle, gifts
 - [ ] Phase 9 — Test on real phones (low-end), performance pass
 - [x] Phase 10a — Release build: signed AAB + APK (`tools/export_release.sh`, key in `keys/`, git-ignored)
-- [ ] Phase 10b — Google Play listing
+- [x] Phase 10b — Google Play kit: store texts EN/AR, icon, feature graphic, 7 screenshots, privacy policy (`store/`, `PRIVACY.md`)
+- [ ] Phase 10c — Upload: closed test (12 testers × 14 days) → production
 
 ---
 

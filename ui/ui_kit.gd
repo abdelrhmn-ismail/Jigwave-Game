@@ -40,6 +40,9 @@ static func accept_action(min_gap_ms: int = 250) -> bool:
 static func label(text: String, font_size: int, color: Color = TEXT) -> Label:
 	var l := Label.new()
 	l.text = text
+	# Direction from the text itself (Arabic right-to-left, English left-to-
+	# right), even on screens whose layout is pinned left-to-right.
+	l.text_direction = Control.TEXT_DIRECTION_AUTO
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -73,6 +76,7 @@ static func text_on(color: Color) -> Color:
 static func button(text: String, min_size: Vector2, font_size: int, color: Color = BUTTON) -> Button:
 	var b := Button.new()
 	b.text = text
+	b.text_direction = Control.TEXT_DIRECTION_AUTO
 	b.custom_minimum_size = min_size
 	b.focus_mode = Control.FOCUS_NONE
 	b.add_theme_font_size_override("font_size", font_size)

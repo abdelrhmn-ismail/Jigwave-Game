@@ -169,6 +169,7 @@ func _build_hud() -> void:
 	title_label = UIKit.label(title, 54)
 	hud.add_child(title_label)
 	progress_label = UIKit.label("", 36, UIKit.TEXT_DIM)
+	progress_label.text_direction = Control.TEXT_DIRECTION_LTR # "8 / 16", never "16 / 8"
 	hud.add_child(progress_label)
 	coins_box = UIKit.coin_pill(46)
 	hud.add_child(coins_box)

@@ -52,7 +52,6 @@ Credits are listed anyway, with thanks to the authors.
 - **space_011** (space): "Night Tree" by Free Nature Stock — CC0 — https://stocksnap.io/photo/night-tree-JZQ37PTNGL
 - **space_016** (space): "M44-Star-Cluster" by Chuck Ayoub — CC0 — https://commons.wikimedia.org/w/index.php?curid=163699680
 - **space_017** (space): "M39-Star-Cluster" by Chuck Ayoub — CC0 — https://commons.wikimedia.org/w/index.php?curid=174922056
-- **art_008** (art): "File:Still-life by José Agustín Arrieta, San Diego Museum of Art.JPG" by Wmpearl — CC0 — https://commons.wikimedia.org/w/index.php?curid=19700610
 - **art_009** (art): "Garden at La Hune Saint-Tropez Public Domain Download from Indianapolis Museum of Art Nov 2022" by Jeanne Selmersheim-Desgranges, painting owned by Indiana Museum of Art - Newfiel — CC0 — https://commons.wikimedia.org/w/index.php?curid=125396966
 - **art_011** (art): "Flower Painting" by Floral Portrait Backgrounds — CC0 — https://stocksnap.io/photo/flower-painting-OQPPU6CLHK
 - **art_012** (art): "Flower Painting" by Floral Portrait Backgrounds — CC0 — https://stocksnap.io/photo/flower-painting-VMRMX0PVBL
@@ -69,7 +68,6 @@ Credits are listed anyway, with thanks to the authors.
 - **cities_019** (cities): "Stunning Night View of Colombo City Skyline" by Thilina Alagiyawanna — CC0 — https://commons.wikimedia.org/w/index.php?curid=187539321
 - **food_008** (food): "Cupcake Desserts" by Brooke Lark — CC0 — https://stocksnap.io/photo/cupcake-desserts-JY0Q4B11R6
 - **food_011** (food): "Pizza-3007395" by igorovsyannykov — CC0 — https://commons.wikimedia.org/w/index.php?curid=69850719
-- **food_014** (food): "Spice market in Marrakech (Morocco)" by Reyes Martínez — CC0 — https://wordpress.org/photos/photo/7462250872/
 - **food_015** (food): "Spice market, Marrakech, Morocco" by Michael Burridge — CC0 — https://wordpress.org/photos/photo/14961f0054/
 - **food_016** (food): "Apple cake with vanilla ice cream 2" by W.carter — CC0 — https://commons.wikimedia.org/w/index.php?curid=88494704
 - **food_017** (food): "File:Thompson PA Ice Cream station.jpg" by Smallbones — CC0 — https://commons.wikimedia.org/w/index.php?curid=42228769

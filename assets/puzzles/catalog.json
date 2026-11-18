@@ -539,17 +539,6 @@
   "openverse_id": "e9ffd26c-2dc5-4d34-9034-0220e62b9cac"
  },
  {
-  "id": "art_008",
-  "category": "art",
-  "file": "res://assets/puzzles/art/art_008.jpg",
-  "thumb": "res://assets/puzzles/thumbs/art_008.jpg",
-  "title": "File:Still-life by José Agustín Arrieta, San Diego Museum of Art.JPG",
-  "creator": "Wmpearl",
-  "license": "cc0",
-  "landing_url": "https://commons.wikimedia.org/w/index.php?curid=19700610",
-  "openverse_id": "31217dea-cebf-4bbd-8617-1ca55e633485"
- },
- {
   "id": "art_009",
   "category": "art",
   "file": "res://assets/puzzles/art/art_009.jpg",
@@ -724,17 +713,6 @@
   "license": "cc0",
   "landing_url": "https://commons.wikimedia.org/w/index.php?curid=69850719",
   "openverse_id": "ec15af2b-6308-4fc1-aa6f-01b860822b58"
- },
- {
-  "id": "food_014",
-  "category": "food",
-  "file": "res://assets/puzzles/food/food_014.jpg",
-  "thumb": "res://assets/puzzles/thumbs/food_014.jpg",
-  "title": "Spice market in Marrakech (Morocco)",
-  "creator": "Reyes Martínez",
-  "license": "cc0",
-  "landing_url": "https://wordpress.org/photos/photo/7462250872/",
-  "openverse_id": "67f379b4-5484-4e0e-aa3e-f1db488ce75c"
  },
  {
   "id": "food_015",
